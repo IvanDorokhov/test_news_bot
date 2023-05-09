@@ -1,10 +1,11 @@
-
 import telebot
 import requests
 from bs4 import BeautifulSoup
 import logging
 import time
 import sqlite3
+import os 
+import schedule
 
 TOKEN = "5881372308:AAHXR-qP960Py0Cw5bCcFxWUBr2bYI7p4dk"
 
@@ -46,12 +47,12 @@ def fetch_and_add_news(source=default_source):
         return []
 
 
-# Функция обновления новостей, вызывает fetch_and_add_news()
+
 def update_news():
     news = fetch_and_add_news(source)
-    # Для отправки новостей в чат, используйте эту переменную `news`
 
-# Функция добавления новостей в базу данных
+
+
 def add_news(title, link):
     try:
         conn = sqlite3.connect('news.db')
@@ -63,7 +64,6 @@ def add_news(title, link):
     except sqlite3.Error as e:
         logging.error(f"Failed to add news to database. Error: {e}")
 
-# Функция извлечения новостей из источника и сохранения в базе данных
 
 @bot.message_handler(commands=['start'])
 def start_handler(message):
@@ -130,7 +130,7 @@ def get_news_handler(message):
     else:
         response_text = "Вот последние новости:"
         for n in range(min(n_news, len(news))):
-            response_text = '\n'.join([response_text, f"\n{n + 1}. {news[n][0]}\n<a href='{news[n][1]}'>источник</a>"])
+            response_text = '\n'.join([response_text, f"\n{n + 1}. {news[n][0]}\n<a href='{news[n][1]}'>Источник: " + str(news[n][1]).rpartition('.ru')[0] + '.ru'+"</a>"])
     bot.send_message(message.chat.id, response_text, parse_mode='HTML')
 
 subscriptions = {}
@@ -150,19 +150,31 @@ def subscribe_user(call):
         if source not in subscriptions:
             subscriptions[source] = set()
         subscriptions[source].add(call.message.chat.id)
-        bot.send_message(call.message.chat.id, f"Вы успешно подписались на новости {source}.")
+        bot.send_message(call.message.chat.id, f"Вы успешно подписались на новости {source}, теперь каждые 5 минут вам будут приходит актуальные новости с данного источника")
+        while True:
+            for source in subscriptions:
+                for chat_id in subscriptions[source]:
+                    newsource = sources[source]
+                    news = fetch_and_add_news(newsource)
+                    if len(news) < 1:
+                        response_text = "К сожалению, новостей не обнаружено."
+                    else:
+                        response_text = "Вот последние новости:"
+                    for n in range(min(n_news, len(news))):
+                        response_text = '\n'.join([response_text, f"\n{n + 1}. {news[n][0]}\n<a href='{news[n][1]}'>Источник: " + str(news[n][1]).rpartition('.ru')[0] + '.ru'+"</a>"])
+                    default_kb = telebot.types.InlineKeyboardMarkup()
+                    bot.send_message(call.message.chat.id, response_text, reply_markup=default_kb, parse_mode='HTML')
 
-        # Connect to SQLite database and create cursor object
+                    time.sleep(300)
+
         conn = sqlite3.connect('news.db')
         cursor = conn.cursor()
 
-        # Insert subscription data into SQLite table
         query = "INSERT INTO users (chat_id, source) VALUES (?, ?)"
         values = (call.message.chat.id, source)
         cursor.execute(query, values)
         conn.commit()
 
-        # Close cursor object and database connection
         cursor.close()
         conn.close()
 
@@ -185,17 +197,14 @@ def unsubscribe_user(call):
         subscriptions[source].remove(call.message.chat.id)
         bot.send_message(call.message.chat.id, f"Вы успешно отписались от новостей {source}.")
 
-        # Connect to SQLite database and create cursor object
         conn = sqlite3.connect('news.db')
         cursor = conn.cursor()
 
-        # Delete subscription data from SQLite table
         query = "DELETE FROM users WHERE chat_id=? AND source=?"
         values = (call.message.chat.id, source)
         cursor.execute(query, values)
         conn.commit()
 
-        # Close cursor object and database connection
         cursor.close()
         conn.close()
     else:
@@ -212,4 +221,7 @@ def list_subscriptions(message):
     else:
         bot.send_message(message.chat.id, "У вас пока нет подписок.")
 
-bot.polling()
+
+
+bot.polling(none_stop=True)
+
