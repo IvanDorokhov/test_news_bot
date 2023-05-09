@@ -18,7 +18,7 @@
 8. /subscriptions - посмотреть текущие подписки</h5>
  
 <h1 align="center">Описание и схема БД<h1>
-![alt text]([http://url/to/img.png](https://sun9-50.userapi.com/impg/iUQxkHPkaPwJi2cbUCuki8xbo7AZZOjQwwvlJA/uzcE9vEkn7s.jpg?size=1217x662&quality=96&sign=9bcec2d45f9961a5a980488ed122995d&type=album))
+![Screenshot](db.png)
 
 
  
