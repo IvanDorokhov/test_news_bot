@@ -1,13 +1,18 @@
 import telebot
 import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
 import logging
 import time
 import sqlite3
 import os 
 import schedule
 
-TOKEN = os.getenv(BOT_TOKEN)
+load_dotenv()
+
+TOKEN = os.getenv("BOT_TOKEN")
+if TOKEN is None:
+    raise ValueError("BOT_TOKEN environment variable is not set.")
 
 bot = telebot.TeleBot(TOKEN)
 
