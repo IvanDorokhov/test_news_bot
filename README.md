@@ -1,9 +1,9 @@
 <h1 align="center">Телеграм бот, с помощью которого можно получать заголовки актуальных новостей.</h1>
 <h4>Для запуска программы нужно сделать следующие шаги:</h4>
-<h5>1. В файле .env поменять переменную BOT_TOKEN на ваш токен<br>
+<h5>1. В файле .env поменять переменную BOT_TOKEN на ваш токен обязательно без пробелов<br>
 2. Открыть консоль в папке приложения<br>
-3. Ввести команду: docker build -t test_bot .<br>
-4. Ввести команду: docker run -d test_bot<br>
+3. Ввести команду:" docker build -t test_bot . "<br>
+4. Ввести команду:" docker run -d test_bot "<br>
 6. Зайти в telegram и запустить бота командой /start</h5><br>
 
 <h1 align="center">Бот поддерживает следующие команды<h1>
@@ -16,6 +16,9 @@
 6. /subscribe - подписаться на рассылку новостей, новости будут приходит каждые 5 минут<br>
 7. /unsubscribe - отписаться от рассылки новостей<br>
 8. /subscriptions - посмотреть текущие подписки</h5>
+ 
+<h1 align="center">Описание и схема БД<h1>
+<img url="https://sun9-50.userapi.com/impg/iUQxkHPkaPwJi2cbUCuki8xbo7AZZOjQwwvlJA/uzcE9vEkn7s.jpg?size=1217x662&quality=96&sign=9bcec2d45f9961a5a980488ed122995d&type=album"/>
 
 
  
