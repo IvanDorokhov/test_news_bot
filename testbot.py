@@ -7,7 +7,7 @@ import sqlite3
 import os 
 import schedule
 
-TOKEN = "5881372308:AAHXR-qP960Py0Cw5bCcFxWUBr2bYI7p4dk"
+TOKEN = os.getenv("BOT_TOKEN")
 
 bot = telebot.TeleBot(TOKEN)
 
