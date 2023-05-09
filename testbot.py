@@ -156,11 +156,11 @@ def subscribe_user(call):
             subscriptions[source] = set()
         subscriptions[source].add(call.message.chat.id)
         bot.send_message(call.message.chat.id, f"Вы успешно подписались на новости {source}, теперь каждые 5 минут вам будут приходит актуальные новости с данного источника")
+        newsource = sources[source]
+        news = fetch_and_add_news(newsource)
         while True:
             for source in subscriptions:
                 for chat_id in subscriptions[source]:
-                    newsource = sources[source]
-                    news = fetch_and_add_news(newsource)
                     if len(news) < 1:
                         response_text = "К сожалению, новостей не обнаружено."
                     else:
