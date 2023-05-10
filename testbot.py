@@ -19,9 +19,8 @@ bot = telebot.TeleBot(TOKEN)
 default_source = "https://ria.ru/export/rss2/index.xml"
 n_news = 5
 sources = {
-    "РИА Новости": "https://ria.ru/export/rss2/index.xml",
+    "РИА": "https://ria.ru/export/rss2/index.xml",
     "Лента.ru": "https://lenta.ru/rss",
-    "Вести24": "https://westi-24.webnode.ru/rss/novosti.xml",
     "ТАСС": "http://tass.ru/rss/v2.xml",
 }
 
@@ -157,20 +156,20 @@ def subscribe_user(call):
         subscriptions[source].add(call.message.chat.id)
         bot.send_message(call.message.chat.id, f"Вы успешно подписались на новости {source}, теперь каждые 5 минут вам будут приходит актуальные новости с данного источника")
         newsource = sources[source]
-        news = fetch_and_add_news(newsource)
         while True:
+            news = fetch_and_add_news(newsource)
             for source in subscriptions:
                 for chat_id in subscriptions[source]:
                     if len(news) < 1:
                         response_text = "К сожалению, новостей не обнаружено."
                     else:
                         response_text = "Вот последние новости:"
-                    for n in range(min(n_news, len(news))):
-                        response_text = '\n'.join([response_text, f"\n{n + 1}. {news[n][0]}\n<a href='{news[n][1]}'>Источник: " + str(news[n][1]).rpartition('.ru')[0] + '.ru'+"</a>"])
-                    default_kb = telebot.types.InlineKeyboardMarkup()
-                    bot.send_message(call.message.chat.id, response_text, reply_markup=default_kb, parse_mode='HTML')
+                        for n in range(min(n_news, len(news))):
+                            response_text = '\n'.join([response_text, f"\n{n + 1}. {news[n][0]}\n<a href='{news[n][1]}'>Источник: " + str(news[n][1]).rpartition('.ru')[0] + '.ru'+"</a>"])
+                        default_kb = telebot.types.InlineKeyboardMarkup()
+                        bot.send_message(call.message.chat.id, response_text, reply_markup=default_kb, parse_mode='HTML')
 
-                    time.sleep(300)
+            time.sleep(30)
 
         conn = sqlite3.connect('news.db')
         cursor = conn.cursor()
@@ -229,4 +228,5 @@ def list_subscriptions(message):
 
 
 bot.polling(none_stop=True)
+
 
