@@ -32,7 +32,6 @@ logging.basicConfig(
 )
 
 
-
 def fetch_and_add_news(source=default_source):
     try:       
         conn = sqlite3.connect('news.db')
@@ -162,14 +161,12 @@ def subscribe_user(call):
                 for chat_id in subscriptions[source]:
                     if len(news) < 1:
                         response_text = "К сожалению, новостей не обнаружено."
-                    else:
-                        response_text = "Вот последние новости:"
-                        for n in range(min(n_news, len(news))):
-                            response_text = '\n'.join([response_text, f"\n{n + 1}. {news[n][0]}\n<a href='{news[n][1]}'>Источник: " + str(news[n][1]).rpartition('.ru')[0] + '.ru'+"</a>"])
+                    else:                    
+                        response_text = '\n'.join([ f"\n{news[1][0]}\n<a href='{news[1][1]}'>Источник: " + str(news[1][1]).rpartition('.ru')[0] + '.ru'+"</a>"])
                         default_kb = telebot.types.InlineKeyboardMarkup()
                         bot.send_message(call.message.chat.id, response_text, reply_markup=default_kb, parse_mode='HTML')
 
-            time.sleep(30)
+            time.sleep(300)
 
         conn = sqlite3.connect('news.db')
         cursor = conn.cursor()
