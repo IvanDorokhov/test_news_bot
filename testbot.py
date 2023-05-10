@@ -169,7 +169,7 @@ def subscribe_user(call):
                         default_kb = telebot.types.InlineKeyboardMarkup()
                         bot.send_message(call.message.chat.id, response_text, reply_markup=default_kb, parse_mode='HTML')
 
-            time.sleep(30)
+            time.sleep(300)
 
         conn = sqlite3.connect('news.db')
         cursor = conn.cursor()
